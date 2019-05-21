@@ -1,0 +1,39 @@
+{
+  "name": "yarn-compose",
+  "version": "0.0.1",
+  "main": "cli",
+  "repository": {
+    "url": "https://github.com/acao/yarn-compose"
+  },
+  "description": "orchestrate node projects and linkages without a monorepo",
+  "license": "MIT",
+  "files": [
+    "lib",
+    "src",
+    "cli.js"
+  ],
+  "bin": {
+    "yarn-compose": "cli"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src",
+    "prepublish": "yarn build"
+  },
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "execa": "^1.0.0",
+    "js-yaml": "^3.13.1",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.6.3"
+  },
+  "devDependencies": {
+    "@types/execa": "^0.9.0",
+    "@types/js-yaml": "^3.12.1",
+    "@types/mkdirp": "^0.5.2",
+    "@types/node": "^12.0.2",
+    "@types/rimraf": "^2.0.2",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.5"
+  }
+}
