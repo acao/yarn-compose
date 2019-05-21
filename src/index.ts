@@ -155,9 +155,9 @@ async function setupProject(projectDir: string, project: NodeProject) {
   if (project.types) {
     await linkTypes(projectDir, project);
   }
-  await linkSelf(projectDir, project);
   await linkDependencies(projectDir, project);
   await buildProject(projectDir, project);
+  await linkSelf(projectDir, project);
 }
 
 (async () => {

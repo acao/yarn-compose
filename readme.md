@@ -54,7 +54,6 @@ projects:
       - graphql
     links: # optional: maintain links to these repositories
       - graphql
-      - graphql-config
 
   - package: graphql-config
     remote: https://github.com/prisma/graphql-config
