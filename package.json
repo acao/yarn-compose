@@ -1,6 +1,6 @@
 {
   "name": "yarn-compose",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "cli",
   "repository": {
     "url": "https://github.com/acao/yarn-compose"
