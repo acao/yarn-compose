@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": { 
+      "*": ["src/types/*"] 
+    },
+    "declaration": true,
     "target": "ES2017",
     "module": "commonjs",
     "outDir": "./lib",
@@ -8,7 +13,11 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "typeRoots": [
+      "./src/types",
+      "./node_modules/@types",
+      "./node_modules/meow"
+    ]
   },
   "exclude": [
     "**/__tests__/*",

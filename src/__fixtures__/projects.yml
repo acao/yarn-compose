@@ -1,40 +1,6 @@
-# yarn-compose
+baseDir: '/tmp/yarn-compose' # path relative to cwd
 
-A simple utility to orchestrate node projects using git and yarn link.
-
-Handy for multi-repo projects that require development with dispirate branches.
-
-For orchestrating npm/yarn moneorepos, see lerna.
-
-Many more features coming soon. This takes care of the annoying parts for me.
-
-This was created to make it easier for me to iterate on language features for the graphql ecosystem.
-
-# Requirements
-
-- git (windows git bash will probably work)
-- yarn
-- node 11 (maybe works with 10? try it!)
-
-# Setup
-
-`yarn global add yarn-compose`
-
-# Usage
-
-1. create a projects.yml file
-1. run `yarn-compose setup` in the same directory
-1. or, run `yarn-compose setup -c path/to/config.yml` or `yarn-compose setup --config-path path/to/config.yml`
-1. also, you can override `baseDir` with `--target` or `-t`
-1. other commands are `rebuild` and `relink` with the same arguments
-1. `--help` works for each command
-
-# Config Example
-
-```yml
-baseDir: './lab' # path relative to cwd
-
-typedefs: # handy for DefinatelyTyped forks
+typeDefs: # handy for forked DefinatelyTyped repos
   graphql:
     remote: git@github.com:acao/DefinitelyTyped.git
     branch: graphql-inputUnion
@@ -47,7 +13,7 @@ projects:
 
   - package: graphql-js # required
     remote: https://github.com/tgriesser/graphql-js # required
-    branch: inputUnion # required
+    branc: inputUnion # required
     linkFrom: dist # optional: for when you need to link a project from its subdirectory
 
   - package: graphql-import
@@ -105,4 +71,3 @@ projects:
       - graphql-language-service-utils
       - graphql-config
       - graphql-import
-```
