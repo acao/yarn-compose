@@ -4,7 +4,7 @@ typeDefs: # handy for forked DefinatelyTyped repos
   graphql:
     remote: git@github.com:acao/DefinitelyTyped.git
     branch: graphql-inputUnion
-    typeName: graphql
+    typesPath: types/graphql
 
 projects: 
 # the order of these is always honored
@@ -13,7 +13,7 @@ projects:
 
   - package: graphql-js # required
     remote: https://github.com/tgriesser/graphql-js # required
-    branc: inputUnion # required
+    branch: inputUnion # required
     linkFrom: dist # optional: for when you need to link a project from its subdirectory
 
   - package: graphql-import

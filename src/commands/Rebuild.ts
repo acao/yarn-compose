@@ -12,7 +12,7 @@ export class Rebuild extends Command {
     super(args);
   }
 
-  run() {
-    this.eachProject(this.buildProject);
+  public run() {
+    super.eachProject(super.buildProject);
   }
 }

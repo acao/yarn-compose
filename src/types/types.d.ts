@@ -17,7 +17,7 @@ export interface NodeProject {
 export interface TypeDef {
   branch: string;
   remote: string;
-  typeName: string;
+  typesPath: string;
 }
 
 export interface CommandConfig {

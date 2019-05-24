@@ -29,7 +29,7 @@ export class Command {
 
   private getCommandConfig(): CommandConfig {
     if (!fs.existsSync(this.configPath)) {
-      logger.error(`config path doesnt exist:\n ${this.configPath}`);
+      logger.error(`config file doesnt exist:\n ${this.configPath}`);
       process.exit(1);
     }
     const config = getConfig(this.configPath);
@@ -40,23 +40,26 @@ export class Command {
   private validateConfig(config: CommandConfig) {
     const valid = ajvValidator(config);
     if (!valid) {
-      logger.error(`Invalid configuration file:`)
+      logger.error(`Invalid configuration file:`);
       logger.error(JSON.stringify(ajvValidator.errors, null, 2));
-      process.exit(1)
+      process.exit(1);
     }
     return valid;
   }
 
   public eachProject(fn: Function) {
+    let value = 0;
     for (const project of this.config.projects) {
+      value++;
       const projectDir = path.join(this.config.baseDir, project.package);
-      fn(projectDir, project);
+      fn(projectDir, project, [value, this.config.projects.length]);
     }
   }
 
   public cloneProject(remote: string, projectDir: string) {
     if (!fs.existsSync(projectDir)) {
-      return execa.sync("git", ["clone", remote, projectDir]);
+      execa.sync("git", ["clone", remote, projectDir]);
+      return
     }
     logger.warn(`${projectDir} already exists`);
   }
@@ -65,19 +68,21 @@ export class Command {
     return execa.sync("git", ["checkout", branch], { cwd: projectDir });
   }
 
-  public installDependencies(projectDir: string, project: NodeProject) {
+  public installDependencies(projectDir: string, project: NodeProject, countOf: number[]) {
     execa.sync("yarn", ["install", "--ignore-scripts"], { cwd: projectDir });
-    logger.info(`installed dependencies for ${project.package}`);
+    logger.iterateInfo(`installed dependencies for ${project.package}`, countOf);
   }
 
-  public buildProject(projectDir: string, project: NodeProject) {
+  public buildProject(projectDir: string, project: NodeProject, countOf: number[]) {
     if (project.lerna) {
-      logger.info(`built ${project.package}`);
-      return execa.sync("lerna", ["run", "build"], { cwd: projectDir });
+      execa.sync("lerna", ["run", "build"], { cwd: projectDir });
+      logger.iterateInfo(`built ${project.package}`, countOf);
+      return
     }
-    logger.info(`built ${project.package}`);
     const buildCommand = project.buildCommand || "build";
-    return execa.sync("yarn", [buildCommand], { cwd: projectDir });
+    execa.sync("yarn", [buildCommand], { cwd: projectDir });
+    logger.iterateInfo(`built ${project.package}`, countOf);
+    return
   }
 
   public linkSelf(projectDir: string, project: NodeProject, relink: boolean = false) {
@@ -94,7 +99,7 @@ export class Command {
     return execa.sync("yarn", ["link"], { cwd });
   }
 
-  public linkDependencies(projectDir: string, project: NodeProject) {
+  public linkDependencies(projectDir: string, project: NodeProject, countOf: number[]) {
     if (project.links) {
       if (project.lerna) {
         execa.sync("lerna", ["exec", "--", "yarn", "link", ...project.links], { cwd: projectDir });
@@ -102,7 +107,7 @@ export class Command {
         execa.sync("yarn", ["link", ...project.links], { cwd: projectDir });
       }
 
-      logger.info(`linked dependencies for ${project.package}`);
+      logger.iterateInfo(`linked dependencies for ${project.package}`, countOf);
       return;
     }
   }
@@ -112,14 +117,14 @@ export class Command {
     if (project.types) {
       for (let type of project.types) {
         const typeSymbolicPath = path.join(projectDir, `node_modules/@types/${type}`);
-        const typePath = path.join(baseDir, "@types", type, "types", typeDefs[type].typeName);
+        const typePath = path.join(baseDir, "@types", typeDefs[type].typesPath);
         rimraf.sync(typeSymbolicPath);
         fs.symlinkSync(typePath, typeSymbolicPath, "dir");
       }
     }
   }
   // default run command
-  run() {
+  public run() {
     logger.error(`Command ${process.argv[2]} does not exist`);
   }
 }

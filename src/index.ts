@@ -20,8 +20,21 @@ const defaultFlags: buildOptions.Options = {
 
 const meowConfig = {
   flags: defaultFlags,
+  autoHelp: false,
   argv: process.argv.slice(3)
 };
+
+const defaultHelpOptions = `
+Global Options:
+
+--base-dir, -t
+  specify which build directory to target.
+  overrides config file value
+
+--config-path, -c
+  specify path to config file
+  ./projects.yml by default
+`;
 
 const commands: Map<any> = {
   setup: Setup,
@@ -30,21 +43,26 @@ const commands: Map<any> = {
   none: Command
 };
 
-try {
-  const [, ,commandArg]: string[] = process.argv;
+(async () => {
+  try {
+    const [, , commandArg]: string[] = process.argv;
 
-  const SelectedCmd = commandArg ? commands[commandArg] || commands.none : commands.none;
+    const SelectedCmd = commandArg ? commands[commandArg] || commands.none : commands.none;
+    logger.meta(SelectedCmd.commandName);
 
-  if (SelectedCmd.additionalFlags) {
-    meowConfig.flags = Object.assign(meowConfig.flags, SelectedCmd.additionalFlags);
+    if (SelectedCmd.additionalFlags) {
+      meowConfig.flags = Object.assign(meowConfig.flags, SelectedCmd.additionalFlags);
+    }
+
+    const otherArgs = meow(SelectedCmd.commandHelp, meowConfig);
+    if (otherArgs.flags.help) {
+      logger.help(SelectedCmd.commandHelp + "\n" + defaultHelpOptions);
+      process.exit(0);
+    }
+
+    const Cmd = new SelectedCmd(otherArgs);
+    await Cmd.run();
+  } catch (err) {
+    logger.error(err);
   }
-
-  const otherArgs = meow(SelectedCmd.commandHelp, meowConfig);
-
-  const Cmd = new SelectedCmd(otherArgs);
-  logger.meta(SelectedCmd.commandName);
-  Cmd.run();
-} catch (err) {
-  logger.error(err);
-}
-
+})();

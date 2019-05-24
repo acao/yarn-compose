@@ -10,10 +10,14 @@ const LOG_PREFIX = "yarn-compose";
 export function getConfig(configPath: string) {
   return yaml.safeLoad(fs.readFileSync(configPath, "utf8"));
 }
-
+const log = console.log;
 export const logger = {
-  meta: (msg: string) => console.log(`${chalk.white(LOG_PREFIX)} ${pkginfo.version} ${msg}\n`),
-  info: (msg: string) => console.log(`${chalk.green("success")} ${msg}`),
-  warn: (msg: string) => console.log(`${chalk.yellow("warn")} ${msg}`),
-  error: (msg: any) => console.log(`${chalk.red("error")} ${msg}`)
+  meta: (msg: string) => log(chalk.whiteBright.bold(`${LOG_PREFIX} ${msg} v${pkginfo.version}\n`)),
+  success: (msg: string) => log(`${chalk.green.bold("success")} ${msg}`),
+  info: (msg: string) => log(`${chalk.green.bold("success")} ${msg}`),
+  iterateInfo: (msg: string, countOf: number[]) =>
+    log(`${chalk.grey(`[${countOf[0]}/${countOf[1]}]`)} ${chalk.green.bold("success")} ${msg}`),
+  warn: (msg: string) => log(`${chalk.yellow("warn")} ${msg}`),
+  error: (msg: any) => log(`${chalk.red("error")} ${msg}`),
+  help: (msg: string) => log(msg)
 };

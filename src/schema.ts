@@ -27,9 +27,9 @@ export const configSchema = {
         properties: {
           branch: { type: 'string' },
           remote: { type: 'string' },
-          typeName: { type: 'string' }
+          typesPath: { type: 'string' }
         },
-        required: ['branch', 'remote', 'typeName']
+        required: ['branch', 'remote', 'typesPath']
       }
     }
   },

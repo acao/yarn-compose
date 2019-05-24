@@ -12,14 +12,22 @@ export class Setup extends Command {
   static commandName = "setup";
 
   static commandHelp = `
-    sets up project workspace, clones and installs projects, typedefinitions, builds and links
+sets up project workspace, 
+clones and installs projects, type definitions, 
+builds and links dependencies
+
+Usage:
+  $ yarn-compose 
+    (expects projects.yml)
+  $ yarn-compose -c path/to/config.yml
   `;
 
   constructor(args: meow.Result) {
     super(args);
   }
 
-  cloneTypeDefinitions() {
+  private cloneTypeDefinitions() {
+    logger.warn("setting up typeDefs, this could take a while... and a lot of bandwith...");
     for (let [typeDefName, typeInfo] of Object.entries(this.config.typeDefs)) {
       const typeDefPath = path.join(this.config.baseDir, "@types", typeDefName);
       if (!fs.existsSync(typeDefPath)) {
@@ -28,14 +36,14 @@ export class Setup extends Command {
       if (fs.existsSync(path.join(typeDefPath, ".git"))) {
         return;
       }
-      execa.sync("git",
-        ["clone", typeInfo.remote, typeDefPath, "--branch", typeInfo.branch, "--depth", "1"], 
-        { cwd: typeDefPath }
-      );
+      execa.sync("git", ["clone", typeInfo.remote, typeDefPath, "--branch", typeInfo.branch, "--depth", "1"], {
+        cwd: typeDefPath
+      });
+      return logger.info(`cloned typeDefinition for ${typeDefName}`);
     }
   }
 
-  setupWorkingDirectory() {
+  private setupWorkingDirectory() {
     const cwd = path.join(this.config.baseDir);
     let isGitRepo = true;
     try {
@@ -54,28 +62,25 @@ export class Setup extends Command {
     }
   }
 
-  setupGitRepos(projectDir: string, project: NodeProject) {
+  private cloneAndInstall(projectDir: string, project: NodeProject, countOf: number[]) {
     super.cloneProject(project.remote, projectDir);
     super.checkoutBranch(projectDir, project.branch);
-    logger.info(`cloned and checked out ${project.package}#${project.branch}`);
+    logger.iterateInfo(`cloned and checked out ${project.package}#${project.branch}`, countOf);
+    super.installDependencies(projectDir, project, countOf);
   }
 
-  setupProject(projectDir: string, project: NodeProject) {
-    super.installDependencies(projectDir, project);
+  private setupProject(projectDir: string, project: NodeProject, countOf: number[]) {
     if (project.types) {
       super.linkTypes(projectDir, project);
     }
-    super.linkDependencies(projectDir, project);
-    super.buildProject(projectDir, project);
+    super.linkDependencies(projectDir, project, countOf);
+    super.buildProject(projectDir, project, countOf);
     super.linkSelf(projectDir, project);
   }
 
-  run() {
+  public async run() {
     this.setupWorkingDirectory();
-    super.eachProject(this.setupGitRepos);
-    logger.warn("setting up typeDefs, this could take a while... and a lot of bandwith...");
-    this.cloneTypeDefinitions();
-    logger.info("type defs setup");
-    super.eachProject(this.setupProject.bind(this));
+    await Promise.all([this.cloneTypeDefinitions(), super.eachProject(this.cloneAndInstall)]);
+    await super.eachProject(this.setupProject.bind(this));
   }
 }

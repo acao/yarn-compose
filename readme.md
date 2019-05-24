@@ -32,13 +32,13 @@ This was created to make it easier for me to iterate on language features for th
 # Config Example
 
 ```yml
-baseDir: './lab' # path relative to cwd
+baseDir: './lab' # path to build the workspace, absolute or relative from cwd
 
 typedefs: # handy for DefinatelyTyped forks
   graphql:
     remote: git@github.com:acao/DefinitelyTyped.git
     branch: graphql-inputUnion
-    typeName: graphql
+    typesPath: types/graphql
 
 projects: 
 # the order of these is always honored
