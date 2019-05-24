@@ -125,6 +125,6 @@ export class Command {
   }
   // default run command
   public run() {
-    logger.error(`Command ${process.argv[2]} does not exist`);
+    logger.error(`Command ${process.argv[2]} does not exist. Try setup, relink, or rebuild `);
   }
 }
