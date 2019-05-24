@@ -19,6 +19,8 @@ export class Command {
   config: CommandConfig;
   configPath: string;
 
+  static commandHelp = `Command ${process.argv[2]} does not exist. Try setup, relink, or rebuild`;
+
   constructor(args: meow.Result) {
     this.input = args.input;
     this.args = args.flags;
@@ -59,7 +61,7 @@ export class Command {
   public cloneProject(remote: string, projectDir: string) {
     if (!fs.existsSync(projectDir)) {
       execa.sync("git", ["clone", remote, projectDir]);
-      return
+      return;
     }
     logger.warn(`${projectDir} already exists`);
   }
@@ -77,12 +79,12 @@ export class Command {
     if (project.lerna) {
       execa.sync("lerna", ["run", "build"], { cwd: projectDir });
       logger.iterateInfo(`built ${project.package}`, countOf);
-      return
+      return;
     }
     const buildCommand = project.buildCommand || "build";
     execa.sync("yarn", [buildCommand], { cwd: projectDir });
     logger.iterateInfo(`built ${project.package}`, countOf);
-    return
+    return;
   }
 
   public linkSelf(projectDir: string, project: NodeProject, relink: boolean = false) {

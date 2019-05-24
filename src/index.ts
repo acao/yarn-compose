@@ -1,5 +1,6 @@
 import * as meow from "meow";
 import * as buildOptions from "minimist-options";
+import chalk from 'chalk'
 import { Map } from "./types/types";
 import { logger } from "./util";
 import { Setup } from "./commands/Setup";
@@ -15,6 +16,10 @@ const defaultFlags: buildOptions.Options = {
   configPath: {
     name: "configPath",
     alias: "c"
+  },
+  help: {
+    name: "help",
+    alias: "h"
   }
 };
 
@@ -34,6 +39,9 @@ Global Options:
 --config-path, -c
   specify path to config file
   ./projects.yml by default
+
+--help, -h
+  help with the particular command
 `;
 
 const commands: Map<any> = {
@@ -43,11 +51,27 @@ const commands: Map<any> = {
   none: Command
 };
 
+const listAvailableCommands = () => {
+  return Object.values(commands)
+    .filter(cmd => cmd.commandName)
+    .reduce((list, cmd) => `${list}\n - yarn-compose ${cmd.commandName}`, "");
+};
+
 (async () => {
   try {
     const [, , commandArg]: string[] = process.argv;
 
-    const SelectedCmd = commandArg ? commands[commandArg] || commands.none : commands.none;
+    if (!commandArg) {
+      logger.help(`No command provided. Try: ${listAvailableCommands()}`);
+      process.exit(0);
+    }
+    if (!commands[commandArg]) {
+      logger.help(`Command ${chalk.whiteBright.bold(process.argv[2])} does not exist.\nTry: ${listAvailableCommands()}`);
+      process.exit(0);
+    }
+
+    const SelectedCmd = commands[commandArg];
+
     logger.meta(SelectedCmd.commandName);
 
     if (SelectedCmd.additionalFlags) {
@@ -55,7 +79,7 @@ const commands: Map<any> = {
     }
 
     const otherArgs = meow(SelectedCmd.commandHelp, meowConfig);
-    if (otherArgs.flags.help) {
+    if (otherArgs.flags.help || !commandArg) {
       logger.help(SelectedCmd.commandHelp + "\n" + defaultHelpOptions);
       process.exit(0);
     }
