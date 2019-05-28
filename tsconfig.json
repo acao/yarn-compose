@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "paths": { 
-      "*": ["src/types/*"] 
+    "paths": {
+      "*": ["src/types/*"]
     },
-    "declaration": true,
-    "target": "ES2017",
+    "target": "esnext",
     "module": "commonjs",
     "outDir": "./lib",
     "strict": true,
@@ -15,12 +14,11 @@
     "skipLibCheck": true,
     "typeRoots": [
       "./src/types",
-      "./node_modules/@types",
-      "./node_modules/meow"
+      "node_modules/@types"
     ]
   },
   "exclude": [
     "**/__tests__/*",
-    "node_modules"
+    "lib"
   ]
 }

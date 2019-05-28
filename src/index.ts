@@ -1,12 +1,11 @@
 import * as meow from "meow";
 import * as buildOptions from "minimist-options";
 import chalk from 'chalk'
-import { Map } from "./types/types";
+import { Map } from "./types";
 import { logger } from "./util";
 import { Setup } from "./commands/Setup";
 import { Relink } from "./commands/Relink";
 import { Rebuild } from "./commands/Rebuild";
-import { Command } from "./Command";
 
 const defaultFlags: buildOptions.Options = {
   buildDir: {
@@ -47,8 +46,7 @@ Global Options:
 const commands: Map<any> = {
   setup: Setup,
   relink: Relink,
-  rebuild: Rebuild,
-  none: Command
+  rebuild: Rebuild
 };
 
 const listAvailableCommands = () => {
@@ -62,12 +60,10 @@ const listAvailableCommands = () => {
     const [, , commandArg]: string[] = process.argv;
 
     if (!commandArg) {
-      logger.help(`No command provided. Try: ${listAvailableCommands()}`);
-      process.exit(0);
+      throw Error(`No command provided. Try: ${listAvailableCommands()}`);
     }
     if (!commands[commandArg]) {
-      logger.help(`Command ${chalk.whiteBright.bold(process.argv[2])} does not exist.\nTry: ${listAvailableCommands()}`);
-      process.exit(0);
+      throw Error(`Command ${chalk.whiteBright.bold(process.argv[2])} does not exist.\nTry: ${listAvailableCommands()}`);
     }
 
     const SelectedCmd = commands[commandArg];
@@ -88,5 +84,6 @@ const listAvailableCommands = () => {
     await Cmd.run();
   } catch (err) {
     logger.error(err);
+    process.exit(1)
   }
 })();

@@ -18,6 +18,12 @@ export interface TypeDef {
   branch: string;
   remote: string;
   typesPath: string;
+  depth?: number;
+}
+
+export interface TaskOptions {
+  countOf: number[]
+  force?: boolean
 }
 
 export interface CommandConfig {

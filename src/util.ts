@@ -1,5 +1,6 @@
 import * as yaml from "js-yaml";
 import * as fs from "fs";
+import * as path from 'path'
 import chalk from "chalk";
 import * as getPkgInfo from "pkginfo";
 
@@ -10,6 +11,11 @@ const LOG_PREFIX = "yarn-compose";
 export function getConfig(configPath: string) {
   return yaml.safeLoad(fs.readFileSync(configPath, "utf8"));
 }
+
+export function repoExists(projectPath: string) {
+  return fs.existsSync(path.join(projectPath, '.git'))
+}
+
 const log = console.log;
 export const logger = {
   meta: (msg: string) => log(chalk.whiteBright.bold(`${LOG_PREFIX} ${msg} v${pkginfo.version}\n`)),

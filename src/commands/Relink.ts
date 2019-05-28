@@ -1,6 +1,10 @@
 import meow from "meow";
 import { Command } from "../Command";
-import { NodeProject } from "../types/types";
+import { NodeProject, TaskOptions } from "../types";
+
+import { linkTypes, linkDependencies, linkSelf } from "../lib";
+
+const linkedFilter = (project: NodeProject) => !!project.links && project.links.length > 0;
 
 export class Relink extends Command {
   static commandName = "relink";
@@ -11,17 +15,20 @@ export class Relink extends Command {
 
   constructor(args: meow.Result) {
     super(args);
+    this.relinkDependencies = this.relinkDependencies.bind(this);
   }
 
-  private relinkProject(projectDir: string, project: NodeProject, countOf: number[]) {
+  private relinkDependencies(projectDir: string, project: NodeProject, opts: TaskOptions) {
     if (project.types) {
-      this.linkTypes(projectDir, project);
+      linkTypes(projectDir, project, this.config);
     }
-    this.linkDependencies(projectDir, project, countOf);
-    this.linkSelf(projectDir, project);
+    linkDependencies(projectDir, project, opts);
   }
 
   public run() {
-    super.eachProject(this.relinkProject.bind(this));
+    super.eachProject(linkSelf);
+    super.eachProject(this.relinkDependencies, {
+      filter: linkedFilter
+    });
   }
 }

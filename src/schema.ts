@@ -14,10 +14,11 @@ export const configSchema = {
           lerna: { type: 'boolean' },
           links: { type: 'array', items: { type: 'string' } },
           types: { type: 'array', items: { type: 'string' } },
-          buildCommand: { type: 'string' },
+          buildScript: { type: 'string' },
           linkFrom: { type: 'string' }
         },
-        required: ['branch', 'package', 'remote']
+        required: ['branch', 'package', 'remote'],
+        additionalProperties: false
       }
     },
     typeDefs: {
@@ -27,11 +28,13 @@ export const configSchema = {
         properties: {
           branch: { type: 'string' },
           remote: { type: 'string' },
-          typesPath: { type: 'string' }
+          typesPath: { type: 'string' },
+          depth: { type: 'integer' }
         },
         required: ['branch', 'remote', 'typesPath']
       }
     }
   },
-  required: ['baseDir', 'projects']
+  additionalProperties: false,
+  required: ['projects']
 };

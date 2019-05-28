@@ -1,0 +1,73 @@
+baseDir: '/tmp/yarn-compose' # path relative to cwd
+
+typeDefs: # handy for forked DefinatelyTyped repos
+  graphql:
+    remote: git@github.com:acao/DefinitelyTyped.git
+    branc: graphql-inputUnion
+    typesPath: types/graphql
+
+projects: 
+# the order of these is always honored
+# so that downstream dependencies can be
+# built before they are linked
+
+  - package: graphql-js # required
+    remote: https://github.com/tgriesser/graphql-js # required
+    branch: inputUnion # required
+    linkFrom: dist # optional: for when you need to link a project from its subdirectory
+
+  - package: graphql-import
+    remote: https://github.com/acao/graphql-import
+    branch: inputUnion
+    buildScript: build # optional: custom value for the script used before linking. build by default
+    types: # optional: ensures that @types/{name} will symlink to the matching entry above
+      - graphql
+    links: # optional: maintain links to these repositories
+      - graphql
+
+  - package: graphql-config
+    remote: https://github.com/prisma/graphql-config
+    branch: master
+    types:
+      - graphql
+    links:
+      - graphql
+      - graphql-import
+
+  - package: graphql-language-service
+    lerna: true # optional, runs `lerna exec`
+    remote: https://github.com/acao/graphql-language-service
+    branch: inputUnion
+    links:
+      - graphql
+      - graphql-config
+      - graphql-import
+      - graphql-language-service-parser
+      - graphql-language-service-interface
+      - graphql-language-service-types
+      - graphql-language-service-utils
+
+  - package: codemirror-graphql
+    branch: inputUnion
+    remote: https://github.com/acao/codemirror-graphql
+    links:
+      - graphql
+      - graphql-language-service-parser
+      - graphql-language-service-interface
+      - graphql-language-service-types
+      - graphql-language-service-utils
+      - graphql-config
+      - graphql-import
+
+  - package: graphiql
+    branch: inputUnion
+    remote: https://github.com/acao/graphiql
+    links:
+      - graphql
+      - codemirror-graphql
+      - graphql-language-service-parser
+      - graphql-language-service-interface
+      - graphql-language-service-types
+      - graphql-language-service-utils
+      - graphql-config
+      - graphql-import

@@ -1,11 +1,13 @@
 import meow from "meow";
 import { Command } from "../Command";
 
+import { buildProject } from "../lib";
+
 export class Rebuild extends Command {
   static commandName = "rebuild";
 
   static commandHelp = `
-    re-builds dependencies
+re-builds dependencies
   `;
 
   constructor(args: meow.Result) {
@@ -13,6 +15,8 @@ export class Rebuild extends Command {
   }
 
   public run() {
-    super.eachProject(super.buildProject);
+    super.eachProject(
+      buildProject
+    );
   }
 }

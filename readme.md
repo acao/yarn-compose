@@ -1,20 +1,20 @@
-# yarn-compose
+🦑 polyrepo development for the rest of us 🦑
 
 A simple utility to orchestrate node projects using git and yarn link.
 
-Handy for multi-repo projects that require development with dispirate branches.
+Handy for multi-repo projects that require development with disparate branches.
 
-For orchestrating npm/yarn moneorepos, see lerna.
+For orchestrating npm/yarn monorepos, see lerna or yarn workspaces.
 
 Many more features coming soon. This takes care of the annoying parts for me.
 
-This was created to make it easier for me to iterate on language features for the graphql ecosystem.
+This was primarily created to make it easier for me to iterate on language features for the graphql ecosystem. I hope it serves you well. Be sure to create a github issue if you need anything!
 
-# Requirements
+# System Requirements
 
-- git (windows git bash will probably work)
-- yarn
-- node 11 (maybe works with 10? try it!)
+- git (windows git bash will probably work, create an issue if it doesnt please!)
+- yarn (eventually will support a mix of npm/yarn projects)
+- node 11 (maybe works with <11? try it!)
 
 # Setup
 
@@ -26,37 +26,96 @@ This was created to make it easier for me to iterate on language features for th
 1. run `yarn-compose setup` in the same directory
 1. or, run `yarn-compose setup -c path/to/config.yml` or `yarn-compose setup --config-path path/to/config.yml`
 1. also, you can override `baseDir` with `--target` or `-t`
-1. other commands are `rebuild` and `relink` with the same arguments
+1. other commands are `rebuild` and `relink` with the same arguments (see below)
 1. `--help` works for each command
+
+# Config File
+You'll want to provide a yml file with at least some basic configuration for linking your projects.
+
+- `baseDir`: (optional, string) this can be provided via CLI or in the config file. you must provide it one way or the other.
+
+- `typeDefs`: (optional) is an object with string keys that are used by the `types` array for each project. used for DefinatelyTyped but could also be used for flow-typed. if you have a one off repo with types, that might be easier to use below.
+  - `remote`: (required, string) git or https url to the remote that contains typings
+  - `branch`: (required, string) the branch or ref of the repo you want
+  - `typesPath`: (required, string) path to the types you want. `types/<typename>` for DefinatelyTyped, for example
+  - `depth`: (optional, integer) - default: `1` - the clone depth you want. because DefinatelyTyped is YUGE
+
+- `projects` (required) is an array of:
+  - `package`: (required, string) the name of the npm package
+  - `remote`: (required, string) the git or https url to the remote (https://github.com/acao/graphql-import)
+  - `branch`: (required, string) the name of the branch (or other ref, `tag/v0.x`, commit hashes etc should work here too)
+  - `types`: (optional, string[]) - matches the typeDef keys, for creating symlinks
+  - `links`: (optional, string[]) - an array of packages that this project should be linked to. you will probably need this for most projects
+  - `lerna`: (optional, boolean) - default: false - whether this is a lerna project. if so, `lerna build` will be run instead of `yarn build`, and linkages will be handled for all subprojects using `lerna exec -- yarn link <projects>`
+  - `buildScript`: (optional, string) - default: `build` custom value for the script used before linking.
+  - `linkFrom:`: (optional, string) - path to link from, if not the project root. this was needed for graphql-js
+
+NOTE: the order of the projects array determines execution for building/linkages/etc. 
+
+The example below demonstrates the descending order of dependencies. The lowest level dependents should go first, with their dependees following.
+
+Eventually these will work like docker-compose services, where the order of operations will be determined by the `links` array. Until then, this CLI is intended to be really unintelligent on purpose.
+
+# Commands
+
+## `setup`
+sets up project workspace, clones and installs projects, type definitions, builds and links dependencies
+
+### Usage
+  $ yarn-compose setup
+      expects projects.yml by default
+  $ yarn-compose setup -c path/to/config.yml
+      or, specify a path to a config file
+
+### Options
+  --force, -f
+    force install
+  --config-path, -c
+  --base-dir, -b
+
+## `rebuild`
+re-builds all projects in order
+
+### Usage
+  $ yarn-compose rebuild
+
+### Options
+  --config-path, -c
+  --base-dir, -b
+
+## `relink`
+re-links all projects in order, assuming symlinks have already been built
+
+### Usage
+  $ yarn-compose relink
+
+### Options
+  --config-path, -c
+  --base-dir, -b
 
 # Config Example
 
 ```yml
-baseDir: './lab' # path to build the workspace, absolute or relative from cwd
+baseDir: './lab'
 
-typedefs: # handy for DefinatelyTyped forks
+typedefs:
   graphql:
     remote: git@github.com:acao/DefinitelyTyped.git
     branch: graphql-inputUnion
     typesPath: types/graphql
 
-projects: 
-# the order of these is always honored
-# so that downstream dependencies can be
-# built before they are linked
-
-  - package: graphql-js # required
-    remote: https://github.com/tgriesser/graphql-js # required
-    branch: inputUnion # required
-    linkFrom: dist # optional: for when you need to link a project from its subdirectory
+projects:
+  - package: graphql
+    remote: https://github.com/tgriesser/graphql-js
+    branch: inputUnion
 
   - package: graphql-import
     remote: https://github.com/acao/graphql-import
     branch: inputUnion
-    buildScript: build # optional: custom value for the script used before linking. build by default
-    types: # optional: ensures that @types/{name} will symlink to the matching entry above
+    buildScript: build
+    types:
       - graphql
-    links: # optional: maintain links to these repositories
+    links:
       - graphql
 
   - package: graphql-config
@@ -69,7 +128,7 @@ projects:
       - graphql-import
 
   - package: graphql-language-service
-    lerna: true # optional, runs `lerna exec`
+    lerna: true
     remote: https://github.com/acao/graphql-language-service
     branch: inputUnion
     links:
@@ -106,3 +165,32 @@ projects:
       - graphql-config
       - graphql-import
 ```
+
+# FAQ
+
+### Why not use lerna or yarn workspaces?
+
+This is more for orchestrating development environments than anything. Not for building permanent ecosystems like a monorepo would be. That said, lerna could still be used for ephemeral demos, etc, however using npm or yarn for managing fully working git repositories is almost impossible! This takes care of setting up a development environment with the assumption that you might need to work from git forks and feature branches across an entire ecosystem of projects.
+
+### Some of the errors look messy
+
+Yes, currently I'm just throwing/logging out the formatted stderr from `execa`. Thinking maybe a --verbose flag could provide more detail if needed.
+
+### Should this be used in production?
+
+No! Symlinking in production environments can be very insecure with node. This should be used for local development only. It could also be used in CI to, say, build a series of complex feature branches before the dist is deployed. This is not designed for setting up a production environment.
+
+### Is this project related to `docker-compose`?
+
+Yes, the config file format is inspired by docker compose, as well as the obsession with linkages. It's not nearly as smart as docker compose though.
+
+# TODO
+- [ ] more examples! (please contribute in gh issues if you can!)
+- [ ] support npm, cnpm, etc? 
+- [ ] meteor, bower even? if folks want?
+- [ ] allow a `--projects` flag to target specific project(s) for each command
+- [ ] support configuring multiple remotes per project
+- [ ] support changing remotes, branches, etc more readily/passively
+- [ ] other features users ask for?
+- [ ] "discover" lerna, npmClient, etc
+- [ ] support other config formats

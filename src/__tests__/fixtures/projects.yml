@@ -5,6 +5,7 @@ typeDefs: # handy for forked DefinatelyTyped repos
     remote: git@github.com:acao/DefinitelyTyped.git
     branch: graphql-inputUnion
     typesPath: types/graphql
+    depth: 1
 
 projects: 
 # the order of these is always honored
@@ -12,12 +13,12 @@ projects:
 # built before they are linked
 
   - package: graphql-js # required
-    remote: https://github.com/tgriesser/graphql-js # required
+    remote: https://github.com/tgriesser/graphql-js.git # required
     branch: inputUnion # required
     linkFrom: dist # optional: for when you need to link a project from its subdirectory
 
   - package: graphql-import
-    remote: https://github.com/acao/graphql-import
+    remote: https://github.com/acao/graphql-import.git
     branch: inputUnion
     buildScript: build # optional: custom value for the script used before linking. build by default
     types: # optional: ensures that @types/{name} will symlink to the matching entry above
@@ -26,7 +27,7 @@ projects:
       - graphql
 
   - package: graphql-config
-    remote: https://github.com/prisma/graphql-config
+    remote: https://github.com/prisma/graphql-config.git
     branch: master
     types:
       - graphql
@@ -36,7 +37,7 @@ projects:
 
   - package: graphql-language-service
     lerna: true # optional, runs `lerna exec`
-    remote: https://github.com/acao/graphql-language-service
+    remote: https://github.com/acao/graphql-language-service.git
     branch: inputUnion
     links:
       - graphql
@@ -49,7 +50,7 @@ projects:
 
   - package: codemirror-graphql
     branch: inputUnion
-    remote: https://github.com/acao/codemirror-graphql
+    remote: https://github.com/acao/codemirror-graphql.git
     links:
       - graphql
       - graphql-language-service-parser
@@ -61,7 +62,7 @@ projects:
 
   - package: graphiql
     branch: inputUnion
-    remote: https://github.com/acao/graphiql
+    remote: https://github.com/acao/graphiql.git
     links:
       - graphql
       - codemirror-graphql
