@@ -3,14 +3,16 @@ export interface Map<T> {
 }
 declare module 'pkginfo'
 
+
 export interface NodeProject {
   branch: string
   package: string
   remote: string
-  lerna?: boolean
+  buildScript: string
+  lerna: boolean
+  npmClient: 'npm' | 'yarn' | 'cnpm'
   links?: string[]
   types?: string[]
-  buildCommand?: string
   linkFrom?: string
 }
 
@@ -18,7 +20,7 @@ export interface TypeDef {
   branch: string
   remote: string
   typesPath: string
-  depth?: number
+  depth: number
 }
 
 export interface TaskOptions {

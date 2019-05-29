@@ -15,20 +15,27 @@ import {
   cloneTypeDefinitions,
 } from '../lib'
 
-const project = {
+import { NodeProject } from '../types'
+
+const project: NodeProject = {
   package: 'example',
   branch: 'master',
   remote: 'git@github.com:example/example.git',
   links: ['another-example', 'another-example-1'],
+  lerna: false,
   types: ['example-type'],
+  npmClient: 'yarn',
+  buildScript: 'build',
 }
 
-const lernaProject = {
+const lernaProject: NodeProject = {
   package: 'lerna-example',
   branch: 'master',
   remote: 'git@github.com:example/lerna-example.git',
   lerna: true,
   links: ['another-example', 'another-example-1'],
+  npmClient: 'yarn',
+  buildScript: 'build',
 }
 
 const DIR = '/tmp/example'
@@ -204,6 +211,7 @@ describe('cloneTypeDefinition', () => {
       branch: 'master',
       remote: 'git://',
       typesPath: 'types',
+      depth: 1,
     })
     expect(execa.sync).toHaveBeenCalledWith(
       'git',
@@ -268,6 +276,7 @@ describe('cloneTypeDefinitions', () => {
         branch: 'master',
         remote: 'git://',
         typesPath: 'types',
+        depth: 1,
       },
     })
     expect(execa.sync).toHaveBeenCalledWith(
