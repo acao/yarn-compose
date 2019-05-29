@@ -32,7 +32,7 @@
     "build": "rimraf lib && tsc",
     "dev": "ts-node src",
     "prerelease": "yarn build",
-    "test": "jest src/**/*.spec.ts --coverage",
+    "test": "jest --coverage",
     "test:watch": "yarn test --watch",
     "pretty": "prettier src/**/*.{ts,json} --write"
   },
