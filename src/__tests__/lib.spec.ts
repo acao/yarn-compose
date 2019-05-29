@@ -12,6 +12,7 @@ import {
   linkSelf,
   linkDependencies,
   cloneTypeDefinition,
+  cloneTypeDefinitions,
 } from '../lib'
 
 const project = {
@@ -249,11 +250,37 @@ describe('cloneTypeDefinition', () => {
       typesPath: 'types',
       depth: 3,
     })
+    expect(execa.sync).toHaveBeenCalledWith('git', ['checkout', 'master'], {
+      cwd: '/tmp/example/@types/example-type',
+    })
+  })
+})
+
+describe('cloneTypeDefinitions', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+    rimraf.sync(DIR)
+  })
+
+  it('should clone the type repo', () => {
+    cloneTypeDefinitions(DIR, { 
+        'example-type': {
+          branch: 'master',
+          remote: 'git://',
+          typesPath: 'types',
+        } 
+      }
+    )
     expect(execa.sync).toHaveBeenCalledWith(
       'git',
       [
-        'checkout',
-        'master'
+        'clone',
+        'git://',
+        '/tmp/example/@types/example-type',
+        '--branch',
+        'master',
+        '--depth',
+        '1',
       ],
       { cwd: '/tmp/example/@types/example-type' }
     )
