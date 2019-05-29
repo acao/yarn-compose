@@ -1,24 +1,24 @@
 export interface Map<T> {
-  [K: string]: T;
+  [K: string]: T
 }
-declare module "pkginfo";
+declare module 'pkginfo'
 
 export interface NodeProject {
-  branch: string;
-  package: string;
-  remote: string;
-  lerna?: boolean;
-  links?: string[];
-  types?: string[];
-  buildCommand?: string;
-  linkFrom?: string;
+  branch: string
+  package: string
+  remote: string
+  lerna?: boolean
+  links?: string[]
+  types?: string[]
+  buildCommand?: string
+  linkFrom?: string
 }
 
 export interface TypeDef {
-  branch: string;
-  remote: string;
-  typesPath: string;
-  depth?: number;
+  branch: string
+  remote: string
+  typesPath: string
+  depth?: number
 }
 
 export interface TaskOptions {
@@ -27,7 +27,7 @@ export interface TaskOptions {
 }
 
 export interface CommandConfig {
-  baseDir: string;
-  typeDefs: Map<TypeDef>;
-  projects: NodeProject[];
+  baseDir: string
+  typeDefs: Map<TypeDef>
+  projects: NodeProject[]
 }
