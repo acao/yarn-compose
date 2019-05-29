@@ -6,6 +6,12 @@
   "repository": {
     "url": "https://github.com/acao/yarn-compose"
   },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true
+  },
   "description": "orchestrate node projects and linkages without a monorepo, using git",
   "license": "MIT",
   "keywords": [
@@ -27,7 +33,8 @@
     "dev": "ts-node src",
     "prerelease": "yarn build",
     "test": "jest src/**/*.spec.ts --coverage",
-    "test:watch": "jest src/**/*.spec.ts --watch"
+    "test:watch": "yarn test --watch",
+    "pretty": "prettier src/**/*.{ts,json} --write"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -42,9 +49,7 @@
       "dist/"
     ],
     "testPathIgnorePatterns": [
-      "__tests__/(fixtures|__mocks__)/",
-      "updates/",
-      "packages/pkg-tests"
+      "__tests__/(fixtures|__mocks__)/"
     ]
   },
   "dependencies": {
@@ -71,6 +76,7 @@
     "chai": "^4.2.0",
     "codecov": "^3.5.0",
     "jest": "^24.8.0",
+    "prettier": "^1.17.1",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.1.0",
     "typescript": "^3.4.5"
