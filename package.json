@@ -1,7 +1,7 @@
 {
   "name": "yarn-compose",
   "version": "0.0.6",
-  "main": "cli",
+  "main": "lib",
   "types": "./lib/index.d.ts",
   "repository": {
     "url": "https://github.com/acao/yarn-compose"
@@ -20,7 +20,7 @@
     "cli"
   ],
   "bin": {
-    "yarn-compose": "cli"
+    "yarn-compose": "bin/yarn-compose"
   },
   "scripts": {
     "build": "rimraf lib && tsc",
