@@ -43,7 +43,7 @@ export class Command {
 
   private getCommandConfig(): CommandConfig {
     if (!fs.existsSync(this.configPath)) {
-      throw Error(`config file doesnt exist:\n ${this.configPath}`);
+      throw Error(`config file doesnt exist:\n ${this.configPath}.\n\nPlease use -c or --config-path to specify a path to a config file, or create one.`);
     }
     const config = getConfig(this.configPath);
     this.validateConfig(config);

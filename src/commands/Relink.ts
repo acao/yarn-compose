@@ -11,7 +11,7 @@ export class Relink extends Command {
   static commandName = 'relink'
 
   static commandHelp = `
-    re-links dependencies
+re-links dependencies
   `
 
   constructor(args: meow.Result) {
