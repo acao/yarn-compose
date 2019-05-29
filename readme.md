@@ -18,8 +18,7 @@ This was primarily created to make it easier for me to iterate on language featu
 
 - git (windows git bash will probably work, create an issue if it doesnt please!)
 - yarn (eventually will support a mix of npm/yarn projects)
-- node 11 (maybe works with <11? try it!)
-
+- node 10 or higher
 # Setup
 
 `yarn global add yarn-compose`
