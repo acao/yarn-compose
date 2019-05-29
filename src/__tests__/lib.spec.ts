@@ -11,6 +11,7 @@ import {
   buildProject,
   linkSelf,
   linkDependencies,
+  cloneTypeDefinition,
 } from '../lib'
 
 const project = {
@@ -188,5 +189,73 @@ describe('linkDependencies', () => {
   it('should do nothing if there are no links', () => {
     linkDependencies(DIR, { ...project, links: undefined }, { countOf: [1, 1] })
     expect(execa.sync).toHaveBeenCalledTimes(0)
+  })
+})
+
+describe('cloneTypeDefinition', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+    rimraf.sync(DIR)
+  })
+
+  it('should clone the type repo', () => {
+    cloneTypeDefinition(DIR, 'example-type', {
+      branch: 'master',
+      remote: 'git://',
+      typesPath: 'types',
+    })
+    expect(execa.sync).toHaveBeenCalledWith(
+      'git',
+      [
+        'clone',
+        'git://',
+        '/tmp/example/@types/example-type',
+        '--branch',
+        'master',
+        '--depth',
+        '1',
+      ],
+      { cwd: '/tmp/example/@types/example-type' }
+    )
+  })
+
+  it('should clone the type repo with depth', () => {
+    cloneTypeDefinition(DIR, 'example-type', {
+      branch: 'master',
+      remote: 'git://',
+      typesPath: 'types',
+      depth: 3,
+    })
+    expect(execa.sync).toHaveBeenCalledWith(
+      'git',
+      [
+        'clone',
+        'git://',
+        '/tmp/example/@types/example-type',
+        '--branch',
+        'master',
+        '--depth',
+        '3',
+      ],
+      { cwd: '/tmp/example/@types/example-type' }
+    )
+  })
+
+  it('should checkout a different branch if it already exists', () => {
+    mkdirp.sync('/tmp/example/@types/example-type/.git')
+    cloneTypeDefinition(DIR, 'example-type', {
+      branch: 'master',
+      remote: 'git://',
+      typesPath: 'types',
+      depth: 3,
+    })
+    expect(execa.sync).toHaveBeenCalledWith(
+      'git',
+      [
+        'checkout',
+        'master'
+      ],
+      { cwd: '/tmp/example/@types/example-type' }
+    )
   })
 })
