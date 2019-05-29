@@ -1,4 +1,8 @@
-🦑 polyrepo development for the rest of us 🦑
+[![npm version](https://badge.fury.io/js/yarn-compose.svg)](https://badge.fury.io/js/yarn-compose)
+[![Build Status](https://travis-ci.com/acao/yarn-compose.svg?branch=master)](https://travis-ci.com/acao/yarn-compose?branch=master)
+[![Coverage Status](https://codecov.io/gh/acao/yarn-compose/branch/master/graph/badge.svg)](https://codecov.io/gh/acao/yarn-compose)
+
+# 🦑 polyrepo development for the rest of us 🦑
 
 A simple utility to orchestrate node projects using git and yarn link.
 
