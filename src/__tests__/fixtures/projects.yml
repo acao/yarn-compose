@@ -43,10 +43,6 @@ projects:
       - graphql
       - graphql-config
       - graphql-import
-      - graphql-language-service-parser
-      - graphql-language-service-interface
-      - graphql-language-service-types
-      - graphql-language-service-utils
 
   - package: codemirror-graphql
     branch: inputUnion

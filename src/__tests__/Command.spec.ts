@@ -1,8 +1,6 @@
 import { Command } from '../Command'
 import { expect } from 'chai'
 import * as rimraf from 'rimraf'
-import * as yaml from 'js-yaml'
-import * as fs from 'fs'
 import * as meow from 'meow'
 
 const meowDefaults = {
@@ -23,11 +21,6 @@ describe('Command', () => {
     expect(command.input).to.deep.equal(['none'])
     expect(command.args).to.deep.equal(meowMock.flags)
     expect(command.configPath).to.equal(__dirname + '/fixtures/projects.yml')
-    expect(command.config).to.deep.equal(
-      yaml.safeLoad(
-        fs.readFileSync(__dirname + '/fixtures/projects.yml', 'utf8')
-      )
-    )
     rimraf.sync('/tmp/yarn-compose')
   })
 
@@ -82,6 +75,9 @@ describe('Command', () => {
         remote: 'https://github.com/tgriesser/graphql-js.git',
         branch: 'inputUnion',
         linkFrom: 'dist',
+        buildScript: 'build',
+        npmClient: 'yarn',
+        lerna: false
       },
       {
         configPath: __dirname + '/fixtures/projects.yml',

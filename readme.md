@@ -51,6 +51,8 @@ You'll want to provide a yml file with at least some basic configuration for lin
   - `links`: (optional, string[]) - an array of packages that this project should be linked to. you will probably need this for most projects
   - `lerna`: (optional, boolean) - default: false - whether this is a lerna project. if so, `lerna build` will be run instead of `yarn build`, and linkages will be handled for all subprojects using `lerna exec -- yarn link <projects>`
   - `buildScript`: (optional, string) - default: `build` custom value for the script used before linking.
+  - `npmClient`: (optional, default: `yarn`) - specify a different npmClient (`yarn`, `npm` or `cnpm`) for this project's script execution. 
+    - Note: in my experience, linking between npm/yarn projects is messy. good luck!
   - `linkFrom:`: (optional, string) - path to link from, if not the project root. this was needed for graphql-js
 
 NOTE: the order of the projects array determines execution for building/linkages/etc. 
@@ -196,7 +198,7 @@ Yes, the config file format is inspired by docker compose, as well as the obsess
 
 # TODO
 - [ ] more examples! (please contribute in gh issues if you can!)
-- [ ] support npm, cnpm, etc? 
+- [X] support npm, cnpm, etc? 
 - [ ] meteor, bower even? if folks want?
 - [ ] allow a `--projects` flag to target specific project(s) for each command
 - [ ] support configuring multiple remotes per project
