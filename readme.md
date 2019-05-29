@@ -28,7 +28,7 @@ This was primarily created to make it easier for me to iterate on language featu
 
 1. create a projects.yml file
 1. run `yarn-compose setup` in the same directory
-1. or, run `yarn-compose setup -c path/to/config.yml` or `yarn-compose setup --config-path path/to/config.yml`
+1. or, run `yarn-compose setup -c path/to/config.yml`
 1. also, you can override `baseDir` with `--target` or `-t`
 1. other commands are `rebuild` and `relink` with the same arguments (see below)
 1. `--help` works for each command
@@ -62,40 +62,47 @@ Eventually these will work like docker-compose services, where the order of oper
 
 # Commands
 
+## Global Options
+
+These are available to all commands
+
+`--config-path`, `-c`
+
+the explicit path to the config file
+
+`--base-dir`, `-b`
+
+the path to the base directory
+
 ## `setup`
 sets up project workspace, clones and installs projects, type definitions, builds and links dependencies
 
 ### Usage
-  $ yarn-compose setup
-      expects projects.yml by default
-  $ yarn-compose setup -c path/to/config.yml
-      or, specify a path to a config file
+
+expects projects.yml by default
+
+```$ yarn-compose setup```
+
+or, specify a path to a config file
+
+```$ yarn-compose setup -c path/to/config.yml```
 
 ### Options
-  --force, -f
-    force install
-  --config-path, -c
-  --base-dir, -b
+`--force`, `-f`
+
+force install
 
 ## `rebuild`
 re-builds all projects in order
 
 ### Usage
-  $ yarn-compose rebuild
-
-### Options
-  --config-path, -c
-  --base-dir, -b
+```$ yarn-compose rebuild -c path/to/config.yml```
 
 ## `relink`
 re-links all projects in order, assuming symlinks have already been built
 
 ### Usage
-  $ yarn-compose relink
-
-### Options
-  --config-path, -c
-  --base-dir, -b
+```$ yarn-compose relink -c path/to/config.yml```
 
 # Config Example
 
