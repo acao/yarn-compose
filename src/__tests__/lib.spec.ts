@@ -263,14 +263,13 @@ describe('cloneTypeDefinitions', () => {
   })
 
   it('should clone the type repo', () => {
-    cloneTypeDefinitions(DIR, { 
-        'example-type': {
-          branch: 'master',
-          remote: 'git://',
-          typesPath: 'types',
-        } 
-      }
-    )
+    cloneTypeDefinitions(DIR, {
+      'example-type': {
+        branch: 'master',
+        remote: 'git://',
+        typesPath: 'types',
+      },
+    })
     expect(execa.sync).toHaveBeenCalledWith(
       'git',
       [

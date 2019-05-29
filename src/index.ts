@@ -49,15 +49,21 @@ const commands: Map<any> = {
   rebuild: Rebuild,
 }
 
-const listAvailableCommands = () => {
+export {
+  Setup,
+  Relink,
+  Rebuild
+}
+
+export const listAvailableCommands = () => {
   return Object.values(commands)
     .filter(cmd => cmd.commandName)
     .reduce((list, cmd) => `${list}\n - yarn-compose ${cmd.commandName}`, '')
 }
 
-;(async () => {
+export function run(argv: string[]) {
   try {
-    const [, , commandArg]: string[] = process.argv
+    const [, , commandArg] = argv
 
     if (!commandArg) {
       throw Error(`No command provided. Try: ${listAvailableCommands()}`)
@@ -65,7 +71,7 @@ const listAvailableCommands = () => {
     if (!commands[commandArg]) {
       throw Error(
         `Command ${chalk.whiteBright.bold(
-          process.argv[2]
+          commandArg
         )} does not exist.\nTry: ${listAvailableCommands()}`
       )
     }
@@ -89,9 +95,9 @@ const listAvailableCommands = () => {
     }
 
     const Cmd = new SelectedCmd(otherArgs)
-    await Cmd.run()
+    Cmd.run()
   } catch (err) {
     logger.error(err)
     process.exit(1)
   }
-})()
+}
