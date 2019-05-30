@@ -2,42 +2,40 @@ import * as path from 'path'
 import * as fs from 'fs'
 
 import * as Ajv from 'ajv'
-import * as meow from 'meow'
 
 import { logger, getConfig } from './util'
-import { CommandConfig, NodeProject } from './types'
+import { CommandConfig, NodeProject, CommandInstanceOptions } from './types'
 import { configSchema } from './schema'
 
 export interface EachProjectOptions {
   filter?: (value: NodeProject) => boolean
 }
 export class Command {
-  args: any
-  input: string[]
+  options: CommandInstanceOptions
   config: CommandConfig
   configPath: string
+  baseDir: string
 
-  constructor(args: meow.Result) {
-    this.input = args.input
-    this.args = args.flags
+  constructor(options: CommandInstanceOptions) {
+    this.options = options
     this.configPath =
-      args.flags.configPath || path.join(process.cwd(), 'projects.yml')
+      options.configPath || path.join(process.cwd(), 'projects.yml')
     this.config = this.getCommandConfig()
-    this.config.baseDir = args.flags.baseDir || this.config.baseDir
+    this.baseDir = this.config.baseDir = options.baseDir || options.targetDir || this.config.baseDir
   }
 
   public eachProject(fn: Function, options: EachProjectOptions = {}) {
     let value = 0
-    const { projects, baseDir } = this.config
+    const { projects } = this.config
     const filteredProjects = options.filter
       ? projects.filter(options.filter)
       : projects
 
     for (const project of filteredProjects) {
       value++
-      const projectDir = path.join(baseDir, project.package)
+      const projectDir = path.join(this.baseDir, project.package)
       fn(projectDir, project, {
-        ...this.args,
+        ...this.options,
         countOf: [value, filteredProjects.length],
       })
     }

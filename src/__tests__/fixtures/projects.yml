@@ -2,7 +2,7 @@ baseDir: '/tmp/yarn-compose' # path relative to cwd
 
 typeDefs: # handy for forked DefinatelyTyped repos
   graphql:
-    remote: git@github.com:acao/DefinitelyTyped.git
+    remote: https://github.com/acao/DefinitelyTyped.git
     branch: graphql-inputUnion
     typesPath: types/graphql
     depth: 1

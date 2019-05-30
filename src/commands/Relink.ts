@@ -1,6 +1,5 @@
-import meow from 'meow'
 import { Command } from '../Command'
-import { NodeProject, TaskOptions } from '../types'
+import { NodeProject, TaskOptions, CommandInstanceOptions } from '../types'
 
 import { linkTypes, linkDependencies, linkSelf } from '../lib'
 
@@ -14,8 +13,8 @@ export class Relink extends Command {
 re-links dependencies
   `
 
-  constructor(args: meow.Result) {
-    super(args)
+  constructor(options: CommandInstanceOptions) {
+    super(options)
     this.relinkDependencies = this.relinkDependencies.bind(this)
   }
 

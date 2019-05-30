@@ -223,8 +223,7 @@ describe('cloneTypeDefinition', () => {
         'master',
         '--depth',
         '1',
-      ],
-      { cwd: '/tmp/example/@types/example-type' }
+      ]
     )
   })
 
@@ -245,8 +244,7 @@ describe('cloneTypeDefinition', () => {
         'master',
         '--depth',
         '3',
-      ],
-      { cwd: '/tmp/example/@types/example-type' }
+      ]
     )
   })
 
@@ -289,8 +287,7 @@ describe('cloneTypeDefinitions', () => {
         'master',
         '--depth',
         '1',
-      ],
-      { cwd: '/tmp/example/@types/example-type' }
+      ]
     )
   })
 })

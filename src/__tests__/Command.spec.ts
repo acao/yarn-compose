@@ -1,71 +1,49 @@
 import { Command } from '../Command'
 import { expect } from 'chai'
 import * as rimraf from 'rimraf'
-import * as meow from 'meow'
-
-const meowDefaults = {
-  input: ['none'],
-  pkg: '',
-  help: '',
-  showHelp: () => {},
-  showVersion: () => {},
-}
+import { CommandInstanceOptions } from '../types'
 
 describe('Command', () => {
-  it('should instantiate with expected variables', () => {
-    const meowMock: meow.Result = {
-      flags: { configPath: __dirname + '/fixtures/projects.yml' },
-      ...meowDefaults,
-    }
-    const command = new Command(meowMock)
-    expect(command.input).to.deep.equal(['none'])
-    expect(command.args).to.deep.equal(meowMock.flags)
-    expect(command.configPath).to.equal(__dirname + '/fixtures/projects.yml')
+  afterEach(() => {
     rimraf.sync('/tmp/yarn-compose')
+  })
+  it('should instantiate with expected variables', () => {
+    const options: CommandInstanceOptions = {
+      configPath: __dirname + '/fixtures/projects.yml',
+    }
+    const command = new Command(options)
+    expect(command.options).to.deep.equal(options)
+    expect(command.configPath).to.equal(__dirname + '/fixtures/projects.yml')
   })
 
   it('should override base dir with CLI args', () => {
-    const meowMock: meow.Result = {
-      flags: {
-        configPath: __dirname + '/fixtures/projects.yml',
-        baseDir: '/tmp/new-path',
-      },
-      ...meowDefaults,
+    const options: CommandInstanceOptions = {
+      configPath: __dirname + '/fixtures/projects.yml',
+      baseDir: '/tmp/new-path',
     }
-    const command = new Command(meowMock)
+    const command = new Command(options)
     expect(command.config.baseDir).to.equal('/tmp/new-path')
     rimraf.sync('/tmp/new-path')
   })
 
   it('should use default configPath when config-path is missing from cli args', () => {
-    const meowMock: meow.Result = {
-      flags: {},
-      ...meowDefaults,
-    }
-    expect(() => new Command(meowMock)).to.throw()
-    rimraf.sync('/tmp/yarn-compose')
+    const options: CommandInstanceOptions = {}
+    expect(() => new Command(options)).to.throw()
   })
 
   it('should throw on invalid config file', () => {
-    const meowMock: meow.Result = {
-      flags: {
-        configPath: __dirname + '/fixtures/projects-invalid.yml',
-      },
-      ...meowDefaults,
+    const options: CommandInstanceOptions = {
+      configPath: __dirname + '/fixtures/projects-invalid.yml',
     }
-    expect(() => new Command(meowMock)).to.throw()
-    rimraf.sync('/tmp/yarn-compose')
+    expect(() => new Command(options)).to.throw()
   })
 
   it('should execute commands and pass arguments for eachProject', () => {
-    const meowMock: meow.Result = {
-      flags: {
-        configPath: __dirname + '/fixtures/projects.yml',
-      },
-      ...meowDefaults,
+    const options: CommandInstanceOptions = {
+      configPath: __dirname + '/fixtures/projects.yml',
     }
     const eachProjectStub = jest.fn()
-    const command = new Command(meowMock)
+    const command = new Command(options)
     command.eachProject(eachProjectStub)
     expect(eachProjectStub.mock.calls.length).to.equal(6)
     expect(eachProjectStub.mock.calls[0]).to.deep.equal([
@@ -77,13 +55,12 @@ describe('Command', () => {
         linkFrom: 'dist',
         buildScript: 'build',
         npmClient: 'yarn',
-        lerna: false
+        lerna: false,
       },
       {
         configPath: __dirname + '/fixtures/projects.yml',
         countOf: [1, 6],
       },
     ])
-    rimraf.sync('/tmp/yarn-compose')
   })
 })

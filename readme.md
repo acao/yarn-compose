@@ -71,7 +71,7 @@ These are available to all commands
 
 the explicit path to the config file
 
-`--base-dir`, `-b`
+`--base-dir`, `-t`
 
 the path to the base directory
 
