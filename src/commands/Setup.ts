@@ -1,10 +1,9 @@
 import * as execa from 'execa'
-import * as meow from 'meow'
 import * as path from 'path'
 import * as fs from 'fs'
 import * as mkdirp from 'mkdirp'
 
-import { NodeProject, TaskOptions } from '../types'
+import { NodeProject, TaskOptions, CommandInstanceOptions } from '../types'
 import { Command } from '../Command'
 import { logger } from '../util'
 
@@ -16,6 +15,10 @@ import {
   cloneTypeDefinitions,
   cloneAndInstall,
 } from '../lib'
+
+export interface SetupInstanceOptions extends CommandInstanceOptions {
+  force?: boolean
+}
 
 export class Setup extends Command {
   static commandName = 'setup'
@@ -42,8 +45,8 @@ Options:
     },
   }
 
-  constructor(args: meow.Result) {
-    super(args)
+  constructor(options: SetupInstanceOptions) {
+    super(options)
     this.setupProject = this.setupProject.bind(this)
   }
 
@@ -81,8 +84,8 @@ Options:
 
   public run() {
     this.setupWorkingDirectory()
-    cloneTypeDefinitions(this.config.baseDir, this.config.typeDefs),
-      super.eachProject(cloneAndInstall)
+    super.eachProject(cloneAndInstall)
+    cloneTypeDefinitions(this.config.baseDir, this.config.typeDefs)
     super.eachProject(this.setupProject)
   }
 }

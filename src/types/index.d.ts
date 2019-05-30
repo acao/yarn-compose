@@ -28,6 +28,14 @@ export interface TaskOptions {
   force?: boolean
 }
 
+// Common flags/options that we expect
+export interface CommandInstanceOptions {
+  baseDir?: string
+  targetDir?: string
+  configPath?: string
+  help?: boolean
+}
+
 export interface CommandConfig {
   baseDir: string
   typeDefs: Map<TypeDef>

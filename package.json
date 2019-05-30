@@ -1,6 +1,6 @@
 {
   "name": "yarn-compose",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": "lib",
   "types": "./lib/index.d.ts",
   "repository": {
@@ -31,8 +31,10 @@
   "scripts": {
     "build": "rimraf lib && tsc",
     "dev": "ts-node src/cli",
-    "prepublish": "yarn test && yarn build",
-    "test": "jest --coverage",
+    "prepublish": "yarn test && yarn test:int && yarn build",
+    "test": "jest spec --coverage",
+    "test:int": "jest int",
+    "test:all": "yarn test && yarn test:int",
     "test:watch": "yarn test --watch",
     "pretty": "prettier src/**/*.{ts,json} --write"
   },

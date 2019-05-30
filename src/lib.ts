@@ -119,8 +119,8 @@ export function cloneTypeDefinition(
   typeInfo: TypeDef
 ) {
   const typeDefPath = path.join(baseDir, '@types', typeDefName)
-  if (!fs.existsSync(typeDefPath)) {
-    mkdirp.sync(typeDefPath)
+  if (!fs.existsSync(typeDefName)) {
+    mkdirp.sync(typeDefName)
   }
   if (repoExists(typeDefPath)) {
     logger.warn(`Type repository for ${typeDefName} is present`)
@@ -128,7 +128,6 @@ export function cloneTypeDefinition(
     return
   }
   logger.warn('setting up typeDefs, this could take a while...')
-
   execa.sync(
     'git',
     [
@@ -139,10 +138,7 @@ export function cloneTypeDefinition(
       typeInfo.branch,
       '--depth',
       typeInfo.depth.toString(),
-    ],
-    {
-      cwd: typeDefPath,
-    }
+    ]
   )
   return logger.info(`cloned typeDefinition for ${typeDefName}`)
 }
@@ -174,8 +170,9 @@ export function linkTypes(
 
 export function cloneProject(remote: string, projectDir: string) {
   if (!repoExists(projectDir)) {
-    execa.sync('git', ['clone', remote, projectDir])
+    return execa.sync('git', ['clone', remote, projectDir])
   }
+  return
 }
 
 export function checkoutBranch(projectDir: string, branch: string) {

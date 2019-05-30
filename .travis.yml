@@ -1,9 +1,29 @@
+git:
+  depth: 5
 language: node_js
 node_js:
-  - "10"
-  - "11"
-  - "12"
+  - '10'
 cache:
   yarn: true
+install:
+  - yarn install --ignore-scripts
 after_success:
   - codecov
+jobs:
+  include:
+  - stage: test
+    script: yarn test:all
+    node_js: lts/*
+  - stage: deploy
+    if: branch = master OR tag IS present
+    script: echo "Deploying..."
+    node_js: lts/*
+    deploy:
+    - provider: npm
+      skip_cleanup: true
+      email: rikki.schulte@gmail.com
+      api_key:
+        secure: b5TwtN2qklFP2IyOxGdZlFhTpZwvRp/8l9ap7g9imxrSp9DeRKyv1r4tT14lfzfXEE0f/7nmP0z4dS2b7guXpdH+Qm43pRkQVRW+SUfr0m6hHhJlFEMe6487U25/bhtbMhmmh/0rob9ffNazE+hLbsRBflDUdEMT3gAFpwNo0PwrzHAc4Mq601u9WRSMmk0jnOc5Q3hHyCQYu7/BDX61cKFLruOR0j05dWss/XBd4PD3puYqRaVDtsEPmJ9RN+yJrm5rzHgyPXCurKhP0Kh4pp8Z7NstWjCE2/Utv7QUe/VwMHbe0utMQ0Ef9xKNVk9RosNVJOfIp5N0Bf3vND7Eo1qYa0A97GoHL50F66NRvmj9UJYw/WitM1Mf2iL/oVy9jB21UV7XEATd/LvX2GRzVlWzuzwm/upN0lWaG84/z44bcGc9HCO380Ub228MV2+p6wipOpFe0w2lu+ZiS/noowUQZOIvxsIcq6e1OgVRdMqs4qJMljJdyHF460U8MHtl6GlU9Ah3+9ae7P+WSxWnxHS+VrFZCJ3pzcHMrjOdHPVFVIynINhlNu/++miMPXXCkIatyvmt4+BOre36aCnsqRQ78GVH/terhzOwjCeCkkp1OOJzRqsRCuDn+Jtgp++wF3vipv1frUlMF3spdcAWwvcbmmFl4gHAEsOI9tjXUWI=
+      on:
+        branch: master
+        tags: true

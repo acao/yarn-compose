@@ -1,5 +1,5 @@
-import meow from 'meow'
 import { Command } from '../Command'
+import { CommandInstanceOptions } from '../types'
 
 import { buildProject } from '../lib'
 
@@ -10,8 +10,8 @@ export class Rebuild extends Command {
 re-builds dependencies
   `
 
-  constructor(args: meow.Result) {
-    super(args)
+  constructor(options: CommandInstanceOptions) {
+    super(options)
   }
 
   public run() {
