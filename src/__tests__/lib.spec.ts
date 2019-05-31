@@ -1,7 +1,7 @@
 import * as execa from 'execa'
 import * as mkdirp from 'mkdirp'
 import * as rimraf from 'rimraf'
-
+import * as path from 'path'
 jest.mock('execa')
 
 import {
@@ -13,6 +13,7 @@ import {
   linkDependencies,
   cloneTypeDefinition,
   cloneTypeDefinitions,
+  linkTypes,
 } from '../lib'
 
 import { NodeProject } from '../types'
@@ -213,18 +214,15 @@ describe('cloneTypeDefinition', () => {
       typesPath: 'types',
       depth: 1,
     })
-    expect(execa.sync).toHaveBeenCalledWith(
-      'git',
-      [
-        'clone',
-        'git://',
-        '/tmp/example/@types/example-type',
-        '--branch',
-        'master',
-        '--depth',
-        '1',
-      ]
-    )
+    expect(execa.sync).toHaveBeenCalledWith('git', [
+      'clone',
+      'git://',
+      '/tmp/example/@types/example-type',
+      '--branch',
+      'master',
+      '--depth',
+      '1',
+    ])
   })
 
   it('should clone the type repo with depth', () => {
@@ -234,18 +232,15 @@ describe('cloneTypeDefinition', () => {
       typesPath: 'types',
       depth: 3,
     })
-    expect(execa.sync).toHaveBeenCalledWith(
-      'git',
-      [
-        'clone',
-        'git://',
-        '/tmp/example/@types/example-type',
-        '--branch',
-        'master',
-        '--depth',
-        '3',
-      ]
-    )
+    expect(execa.sync).toHaveBeenCalledWith('git', [
+      'clone',
+      'git://',
+      '/tmp/example/@types/example-type',
+      '--branch',
+      'master',
+      '--depth',
+      '3',
+    ])
   })
 
   it('should checkout a different branch if it already exists', () => {
@@ -277,17 +272,41 @@ describe('cloneTypeDefinitions', () => {
         depth: 1,
       },
     })
-    expect(execa.sync).toHaveBeenCalledWith(
-      'git',
-      [
-        'clone',
-        'git://',
-        '/tmp/example/@types/example-type',
-        '--branch',
-        'master',
-        '--depth',
-        '1',
-      ]
+    expect(execa.sync).toHaveBeenCalledWith('git', [
+      'clone',
+      'git://',
+      '/tmp/example/@types/example-type',
+      '--branch',
+      'master',
+      '--depth',
+      '1',
+    ])
+  })
+})
+
+describe('linkTypes', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+    rimraf.sync(DIR)
+  })
+  it('should link directories', () => {
+    mkdirp.sync(path.join(DIR, 'example/@types/example-type'))
+    mkdirp.sync(path.join(DIR, 'example/node_modules/@types'))
+    linkTypes(
+      path.join(DIR, 'example'),
+      project,
+      {
+        baseDir: DIR,
+        projects: [project],
+        typeDefs: {
+          'example-type': {
+            branch: 'master',
+            remote: 'git://',
+            typesPath: 'example-type',
+            depth: 1,
+          },
+        },
+      }
     )
   })
 })
