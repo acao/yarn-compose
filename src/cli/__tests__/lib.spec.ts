@@ -32,11 +32,27 @@ describe('runCLI', () => {
     expect(util.commandMap.setup).toBeCalledTimes(1)
   })
 
-  it('show command help', () => {
+  it('shows command help when passing --help', () => {
     rimraf.sync(BUILD_DIR)
     const argv = ['', '', 'setup', '--help']
     runCLI(argv)
     expect(util.getMeowConfig).toBeCalledTimes(1)
     expect(util.getMeowConfig).toBeCalledWith(argv)
+  })
+
+  it('shows help on invalid command', () => {
+    rimraf.sync(BUILD_DIR)
+    const argv = ['', '', 'invalid']
+    expect(() => runCLI(argv)).toThrowError()
+    expect(util.getMeowConfig).toBeCalledTimes(0)
+    expect(util.listAvailableCommands).toBeCalledTimes(1)
+  })
+
+  it('shows help on missing command', () => {
+    rimraf.sync(BUILD_DIR)
+    const argv = ['', '']
+    expect(() => runCLI(argv)).toThrowError()
+    expect(util.getMeowConfig).toBeCalledTimes(0)
+    expect(util.listAvailableCommands).toBeCalledTimes(1)
   })
 })
