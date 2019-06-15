@@ -1,7 +1,7 @@
 import { Setup, SetupInstanceOptions } from '../Setup'
 import * as rimraf from 'rimraf'
 import * as lib from '../../lib'
-import execa from 'execa'
+import * as execa from 'execa'
 
 jest.mock('../../lib')
 
