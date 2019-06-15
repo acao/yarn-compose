@@ -1,6 +1,6 @@
 {
   "name": "yarn-compose",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "main": "lib",
   "types": "./lib/index.d.ts",
   "repository": {

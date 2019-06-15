@@ -1,8 +1,7 @@
 import { Setup, SetupInstanceOptions } from '../Setup'
 import * as rimraf from 'rimraf'
 import * as lib from '../../lib'
-import mkdirp = require('mkdirp')
-import execa = require('execa')
+import execa from 'execa'
 
 jest.mock('../../lib')
 
@@ -28,10 +27,9 @@ describe('Setup', () => {
   })
 
   it('should throw when you attempt to use an existing git repo', () => {
-    mkdirp.sync(BUILD_DIR)
-    execa.sync('git', ['init', '.'], { cwd: BUILD_DIR })
+    execa.sync('git', ['init', BUILD_DIR])
     expect(() => new Setup(options).run()).toThrow(
       'cannot intialize in a git repository'
     )
-  }, 8000)
+  })
 })
