@@ -63,7 +63,7 @@
     "meow": "^5.0.0",
     "mkdirp": "^0.5.1",
     "pkginfo": "^0.4.1",
-    "rimraf": "^2.6.3"
+    "rimraf": "^3.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
