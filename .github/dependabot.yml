@@ -1,0 +1,46 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  labels:
+  - dependencies
+  ignore:
+  - dependency-name: "@types/node"
+    versions:
+    - 14.14.22
+    - 14.14.25
+    - 14.14.27
+    - 14.14.28
+    - 14.14.30
+    - 14.14.31
+    - 14.14.32
+    - 14.14.33
+    - 14.14.34
+    - 14.14.35
+    - 14.14.36
+    - 14.14.37
+    - 14.14.39
+    - 14.14.41
+    - 15.0.0
+  - dependency-name: "@types/chai"
+    versions:
+    - 4.2.14
+    - 4.2.15
+    - 4.2.16
+  - dependency-name: "@types/mocha"
+    versions:
+    - 8.2.0
+    - 8.2.1
+  - dependency-name: lodash
+    versions:
+    - 4.17.20
+  - dependency-name: chalk
+    versions:
+    - 4.1.0
+  - dependency-name: handlebars
+    versions:
+    - 4.7.6
